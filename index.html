@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f4f6f8">
+    <title>세이프빌드 | 현장 안전 관리</title>
+    <link rel="stylesheet" href="./styles.css">
+    <script src="./calculator.js" defer></script>
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="세이프빌드 홈">
+        <span class="brand-mark" aria-hidden="true">안</span>
+        <span>세이프빌드</span>
+      </a>
+      <span class="version">F1 · 프로젝트 자동 생성</span>
+    </header>
+
+    <main class="page-shell">
+      <section class="intro">
+        <p class="eyebrow">ZERO-CONFIG PROJECT SETUP</p>
+        <h1>현장 정보를 입력하고<br>안전 세팅을 시작하세요.</h1>
+        <p class="intro-copy">공종과 계약금액을 입력하면 산안비 예산 시뮬레이션과 공종별 초기 위험요인을 한 번에 준비합니다.</p>
+      </section>
+
+      <section class="setup-card" aria-labelledby="setup-title">
+        <div class="section-heading">
+          <div>
+            <p class="step-label">STEP 01</p>
+            <h2 id="setup-title">프로젝트 기본 정보</h2>
+          </div>
+          <span class="required-note">필수 입력 2개</span>
+        </div>
+
+        <form id="project-form" novalidate>
+          <div class="field">
+            <label for="work-type">공종 <span class="required">*</span></label>
+            <select id="work-type" name="workType" required>
+              <option value="">공종을 선택하세요</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="contract-amount">하도급 계약금액 <span class="required">*</span></label>
+            <div class="amount-input">
+              <input id="contract-amount" name="contractAmount" type="text" inputmode="numeric" autocomplete="off" placeholder="예: 500,000,000" aria-describedby="amount-reading amount-error" required>
+              <span>원</span>
+            </div>
+            <div class="input-meta">
+              <span id="amount-reading" class="amount-reading">금액을 입력하면 한글 금액으로 보여드려요.</span>
+              <span id="amount-error" class="field-error" role="alert"></span>
+            </div>
+            <div class="quick-amounts" aria-label="계약금액 빠른 입력">
+              <button type="button" data-amount="500000000">5억</button>
+              <button type="button" data-amount="1000000000">10억</button>
+              <button type="button" data-amount="5000000000">50억</button>
+              <button type="button" data-amount="10000000000">100억</button>
+            </div>
+          </div>
+
+          <details class="advanced-settings">
+            <summary>예산 시뮬레이션 기준 조정 <span>선택 사항</span></summary>
+            <p class="settings-note">실제 산정에는 공사 분류와 대상액 등 추가 정보가 필요합니다. 기본값은 화면 흐름 확인을 위한 예시이며 법정 요율이 아닙니다.</p>
+            <div class="settings-grid">
+              <div class="field">
+                <label for="basis-ratio">계약금액 중 대상액 비중</label>
+                <div class="small-input">
+                  <input id="basis-ratio" type="number" min="1" max="100" step="1" value="65">
+                  <span>%</span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="demo-rate">예시 요율</label>
+                <div class="small-input">
+                  <input id="demo-rate" type="number" min="0.01" max="20" step="0.01" value="3.11">
+                  <span>%</span>
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <div class="simulation-notice" role="note">
+            <span class="notice-icon" aria-hidden="true">i</span>
+            <p><strong>시뮬레이션 안내</strong> 이 MVP는 예시 비중·예시 요율로 참고 금액을 계산합니다. 법정 계상액 또는 정산 금액으로 사용하지 마세요.</p>
+          </div>
+
+          <p id="form-error" class="form-error" role="alert"></p>
+          <button class="primary-button" type="submit">
+            <span>프로젝트 안전 세팅 만들기</span>
+            <span aria-hidden="true">→</span>
+          </button>
+        </form>
+      </section>
+
+      <section id="result-section" class="result-section" aria-live="polite" hidden>
+        <div class="result-heading">
+          <div>
+            <p class="step-label">SETUP COMPLETE</p>
+            <h2 id="result-title">프로젝트 안전 세팅</h2>
+          </div>
+          <button id="print-button" class="secondary-button" type="button">결과 인쇄</button>
+        </div>
+
+        <div class="estimate-card">
+          <div class="estimate-label">산안비 예시 시뮬레이션 <span class="draft-badge">법정 산정 아님</span></div>
+          <p id="estimated-budget" class="estimated-budget">—</p>
+          <div class="calculation-breakdown">
+            <span>계약금액 <strong id="breakdown-contract">—</strong></span>
+            <span>대상액 비중 <strong id="breakdown-ratio">—</strong></span>
+            <span>적용 예시 요율 <strong id="breakdown-rate">—</strong></span>
+          </div>
+          <p class="formula-note">계산 예시: 계약금액 × 대상액 비중 × 예시 요율</p>
+        </div>
+
+        <div class="risk-heading">
+          <div>
+            <p class="step-label">RISK STARTER LIST</p>
+            <h3>공종별 초기 위험요인 <span id="risk-count" class="count-badge">0</span></h3>
+          </div>
+          <p class="draft-caption">현장 검토가 필요한 초안</p>
+        </div>
+        <p class="risk-disclaimer">아래 항목은 제품 흐름 확인을 위한 일반 예시입니다. KOSHA 공식 DB 인용이나 현장 위험성평가 결과가 아닙니다.</p>
+        <div id="risk-list" class="risk-list"></div>
+
+        <div class="result-actions">
+          <button id="save-button" class="primary-button" type="button">이 프로젝트 저장</button>
+          <span id="save-status" class="save-status" role="status"></span>
+        </div>
+      </section>
+
+      <section class="saved-section" aria-labelledby="saved-title">
+        <div class="section-heading saved-heading">
+          <div>
+            <p class="step-label">ON THIS DEVICE</p>
+            <h2 id="saved-title">저장한 프로젝트</h2>
+          </div>
+          <span id="saved-count" class="required-note">0개</span>
+        </div>
+        <div id="saved-projects" class="saved-projects"></div>
+        <p class="storage-note">프로젝트는 이 브라우저에만 저장되며 서버로 전송되지 않습니다.</p>
+      </section>
+      <footer class="footer-note">세이프빌드 MVP <span>·</span> 법령·공식 위험성평가 데이터 연동 전 시제품</footer>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "safebuild-f1-mvp",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test tests/calculator.test.cjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
